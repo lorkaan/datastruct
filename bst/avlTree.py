@@ -1,5 +1,5 @@
 '''
-A Binary Search Tree node. 
+A Binary Search Tree node.
 '''
 class TreeNode:
 
@@ -14,14 +14,14 @@ class TreeNode:
         else:
             return 1 + max(TreeNode.calculateHeight(node.left), TreeNode.calculateHeight(node.right))
 
-    
+
     def __init__(self, data, left=None, right=None):
         self.data = data
         self.left = left
         self.right = right
 
 '''
-Class Representation of a Self-Balancing binary search tree. 
+Class Representation of a Self-Balancing binary search tree.
 
 AVL Tree Implementation
 '''
@@ -140,11 +140,10 @@ class AvlTree:
 
     def search(self, data, root=self.root):
         if root == None:
-            return None
+            return False
         elif data == root.data:
-            return root
+            return True
         elif data < root.data:
             return self.search(data, root.left)
         else:
             return self.search(data, root.right)
-
