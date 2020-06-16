@@ -9,11 +9,11 @@ class TreeNode:
     @staticmethod
     def calculateHeight(node):
         if node.left == None and node.right == None:
-            return 0
+            return 1
         elif node.left == None:
-            return 1 + node.right.height
+            return 1 + TreeNode.calculateHeight(node.right)
         elif node.right == None:
-            return 1 + node.left.height
+            return 1 + TreeNode.calculateHeight(node.left)
         else:
             return 1 + max(TreeNode.calculateHeight(node.left), TreeNode.calculateHeight(node.right))
 
@@ -62,7 +62,7 @@ class TreeNode:
     Creates an in-order list of the tree rooted at 'node'
     '''
     @staticmethod
-    def listify(node, retList=[]):
+    def listify(node, retList):
         if node == None:
             return retList
         if not node.left == None:
@@ -106,10 +106,13 @@ class AvlTree:
     '''
     @staticmethod
     def leftRotation(root):
-        newRoot = root.right
-        root.right = newRoot.left
-        newRoot.left = root
-        return newRoot
+        if root == None:
+            return None
+        else:
+            newRoot = root.right
+            root.right = newRoot.left
+            newRoot.left = root
+            return newRoot
 
     '''
     Rotation method used to ensure self-balancing.
@@ -118,10 +121,13 @@ class AvlTree:
     '''
     @staticmethod
     def rightRotation(root):
-        newRoot = root.left
-        root.left = newRoot.right
-        newRoot.right = root
-        return newRoot
+        if root == None:
+            return None
+        else:
+            newRoot = root.left
+            root.left = newRoot.right
+            newRoot.right = root
+            return newRoot
 
     '''
     Rotation method used to ensure self-balancing.
@@ -130,8 +136,11 @@ class AvlTree:
     '''
     @staticmethod
     def leftRightRotation(root):
-        root.left = AvlTree.leftRotation(root.left)
-        return AvlTree.rightRotation(root)
+        if root == None:
+            return None
+        else:
+            root.left = AvlTree.leftRotation(root.left)
+            return AvlTree.rightRotation(root)
 
     '''
     Rotation method used to ensure self-balancing.
@@ -140,8 +149,11 @@ class AvlTree:
     '''
     @staticmethod
     def rightLeftRotation(root):
-        root.right = AvlTree.rightRotation(root.right)
-        return AvlTree.leftRotation(root)
+        if root == None:
+            return None
+        else:
+            root.right = AvlTree.rightRotation(root.right)
+            return AvlTree.leftRotation(root)
 
     '''
     Calculates the Balance Factor to determine if 
@@ -149,13 +161,16 @@ class AvlTree:
     '''
     @staticmethod
     def calculateBalanceFactor(root):
-        leftHeight = 0
-        rightHeight = 0
-        if not root.left == None:
-            leftHeight = TreeNode.calculateHeight(root.left)
-        if not root.right == None:
-            rightHeight = TreeNode.calculateHeight(root.right)
-        return leftHeight - rightHeight
+        if root == None:
+            return 0
+        else:
+            leftHeight = 0
+            rightHeight = 0
+            if not root.left == None:
+                leftHeight = TreeNode.calculateHeight(root.left)
+            if not root.right == None:
+                rightHeight = TreeNode.calculateHeight(root.right)
+            return leftHeight - rightHeight
 
     '''
     Self balancing method.
@@ -168,15 +183,15 @@ class AvlTree:
             balanceFactor = AvlTree.calculateBalanceFactor(root)
             if abs(balanceFactor) > 1:
                 # Unbalanced
-                if balanceFactor < 0:
-                    if AvlTree.calculateBalanceFactor(root.left) < 0:
+                if balanceFactor > 0:
+                    if AvlTree.calculateBalanceFactor(root.left) > 0:
                         # right rotation
                         return AvlTree.rightRotation(root)
                     else:
                         # left-right rotation
                         return AvlTree.leftRightRotation(root)
                 else:
-                    if AvlTree.calculateBalanceFactor(root.right) > 0:
+                    if AvlTree.calculateBalanceFactor(root.right) < 0:
                         # left rotation
                         return AvlTree.leftRotation(root)
                     else:
@@ -310,7 +325,7 @@ class AvlTree:
     Creates an ordered list from smallest to largests
     '''
     def generateList(self):
-        return TreeNode.listify(self.root)
+        return TreeNode.listify(self.root, [])
 
     '''
     Generates a set object from the Tree.
