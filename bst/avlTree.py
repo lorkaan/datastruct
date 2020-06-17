@@ -99,6 +99,10 @@ class AvlTree:
     def defaultClash(data, root):
         return root
 
+    @staticmethod
+    def defaultAddFunc(data):
+        return data
+
     '''
     Rotation method used to ensure self-balancing.
 
@@ -205,11 +209,14 @@ class AvlTree:
     Recurisve helper method for insertion
     '''
     @staticmethod
-    def insertRecursive(data, root, clash=None):
+    def insertRecursive(data, root, clash=None, addFunc=None):
         if data < root.data:
             if root.left == None:
                 # Base Case
-                root.left = TreeNode(data)
+                if addFunc == None:
+                    root.left = TreeNode(addFunc(data))
+                else:
+                    root.left = TreeNode(data)
                 return root
             else:
                 root.left = AvlTree.insertRecursive(data, root.left)
@@ -217,7 +224,10 @@ class AvlTree:
         elif data > root.data:
             if root.right == None:
                 # Base Case
-                root.right = TreeNode(data)
+                if addFunc == None:
+                    root.right = TreeNode(addFunc(data))
+                else:
+                    root.right = TreeNode(data)
                 return root
             else:
                 root.right = AvlTree.insertRecursive(data, root.right)
@@ -274,12 +284,16 @@ class AvlTree:
         <TreeNode> clashFunc(<any> data, <TreeNode> node)
     Otherwise the insertion method would break.
     '''
-    def __init__(self, clashFunc=None):
+    def __init__(self, clashFunc=None, addFunc=None):
         self.root = None
         if clashFunc == None:
             self.clash = AvlTree.defaultClash
         else:
             self.clash = clashFunc
+        if addFunc == None:
+            self.addFunc = AvlTree.defaultAddFunc
+        else:
+            self.addFunc = addFunc
 
     '''
         Adds a new node with the given data to the Tree. 
