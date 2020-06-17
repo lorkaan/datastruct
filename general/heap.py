@@ -44,6 +44,9 @@ class HeapNode:
     def getData(self):
         return self.data
 
+    def __str__(self):
+        return f"{self.weight}:{str(self.data)}"
+
     '''
     Comparison methods of a HeapNode
     '''
@@ -167,7 +170,7 @@ class Heap:
     '''
     def heapifyUp(self, index):
         parentIndex = Heap.getParent(index)
-        if swap(parentIndex, index):
+        if self.swap(parentIndex, index):
             return self.heapifyUp(parentIndex)
         else:
             return
@@ -181,13 +184,13 @@ class Heap:
         rightChildIndex = Heap.getRightChild(index)
         if self.compare(self.storage[leftChildIndex], self.storage[rightChildIndex]):
             # left child is the higher priority
-            if swap(leftChildIndex, index):
+            if self.swap(leftChildIndex, index):
                 return self.heapifyDown(leftChildIndex)
             else:
                 return
         else:
             # right child is the higher priority
-            if swap(rightChildIndex, index):
+            if self.swap(rightChildIndex, index):
                 return self.heapifyDown(rightChildIndex)
             else:
                 return
@@ -211,6 +214,12 @@ class Heap:
         self.storage[Heap.getRootIndex()] = self.storage.pop(self.size())
         self.heapifyDown(Heap.getRootIndex())
         return item.getData()
+
+    def __str__(self):
+        heapStr = ""
+        for elem in self.storage:
+            heapStr = heapStr + str(elem) + "\n"
+        return heapStr
 
 '''
 Implementation of a Min Heap.
