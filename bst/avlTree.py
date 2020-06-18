@@ -219,7 +219,7 @@ class AvlTree:
                     root.left = TreeNode(data)
                 return root
             else:
-                root.left = AvlTree.insertRecursive(data, root.left)
+                root.left = AvlTree.insertRecursive(data, root.left, addFunc)
                 return AvlTree.balance(root)
         elif data > root.data:
             if root.right == None:
@@ -230,7 +230,7 @@ class AvlTree:
                     root.right = TreeNode(data)
                 return root
             else:
-                root.right = AvlTree.insertRecursive(data, root.right)
+                root.right = AvlTree.insertRecursive(data, root.right, addFunc)
                 return AvlTree.balance(root)
         else:
             # insert Recursive with data == root.data
@@ -302,7 +302,7 @@ class AvlTree:
         if self.root == None:
             self.root = TreeNode(data)
         else:
-            self.root = AvlTree.insertRecursive(data, self.root, self.clash)
+            self.root = AvlTree.insertRecursive(data, self.root, self.clash, self.addFunc)
 
     '''
     Removes a node with the given data from the Tree
