@@ -170,7 +170,7 @@ class Heap:
     '''
     def heapifyUp(self, index):
         parentIndex = Heap.getParent(index)
-        if self.swap(parentIndex, index):
+        if self.swap(index, parentIndex):
             return self.heapifyUp(parentIndex)
         else:
             return
@@ -182,18 +182,21 @@ class Heap:
     def heapifyDown(self, index):
         leftChildIndex = Heap.getLeftChild(index)
         rightChildIndex = Heap.getRightChild(index)
-        if self.compare(self.storage[leftChildIndex], self.storage[rightChildIndex]):
-            # left child is the higher priority
-            if self.swap(leftChildIndex, index):
-                return self.heapifyDown(leftChildIndex)
+        if self.inRange(leftChildIndex) and self.inRange(rightChildIndex):
+            if self.compare(self.storage[leftChildIndex], self.storage[rightChildIndex]):
+                # left child is the higher priority
+                if self.swap(leftChildIndex, index):
+                    return self.heapifyDown(leftChildIndex)
+                else:
+                    return
             else:
-                return
+                # right child is the higher priority
+                if self.swap(rightChildIndex, index):
+                    return self.heapifyDown(rightChildIndex)
+                else:
+                    return
         else:
-            # right child is the higher priority
-            if self.swap(rightChildIndex, index):
-                return self.heapifyDown(rightChildIndex)
-            else:
-                return
+            return
 
     '''
     Performs an add operation on the Heap.
@@ -210,10 +213,14 @@ class Heap:
     Returns the next element in the Heap.
     '''
     def next(self):
-        item = self.storage[Heap.getRootIndex()]
-        self.storage[Heap.getRootIndex()] = self.storage.pop(self.size())
-        self.heapifyDown(Heap.getRootIndex())
-        return item.getData()
+        if self.size() < 0:
+            return None
+        else:
+            item = self.storage[Heap.getRootIndex()]
+            self.storage[Heap.getRootIndex()] = self.storage.pop(self.size())
+            self.storage[0] = self.storage[0] - 1
+            self.heapifyDown(Heap.getRootIndex())
+            return item.getData()
 
     def __str__(self):
         heapStr = ""
