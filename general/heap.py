@@ -215,8 +215,11 @@ class Heap:
     Returns the next element in the Heap.
     '''
     def next(self):
-        if self.size() < 0:
-            return None
+        if self.size() <= 0:
+            return (None, None)
+        elif self.size() == 1:
+            self.storage[0] = self.storage[0] - 1
+            return self.storage.pop(Heap.getRootIndex()).getData()
         else:
             item = self.storage[Heap.getRootIndex()]
             self.storage[Heap.getRootIndex()] = self.storage.pop(self.size())

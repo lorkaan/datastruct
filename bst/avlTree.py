@@ -344,5 +344,5 @@ class AvlTree:
     '''
     Generates a set object from the Tree.
     '''
-    def genrateSet(self):
+    def generateSet(self):
         return set(self.generateList())
