@@ -40,9 +40,11 @@ class HeapNode:
     This function exists so that it might be overridden
     in the future to perform some preprocessing of data before
     it is extracted.
+
+    Currently, returns a Tuple representing (weight, data)
     '''
     def getData(self):
-        return self.data
+        return (self.weight, self.data)
 
     def __str__(self):
         return f"{self.weight}:{str(self.data)}"
