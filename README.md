@@ -8,7 +8,7 @@ It serves as a personal toolbox to be used across multiple projects.
 ## Structures
 
 ### Trees
-- *AVL Tree*: A balanced binary search tree with customizable data
+- **AVL Tree**: A balanced binary search tree with customizable data
 	- Customizable functionality to handle multiple keys, default enforce uniqueness.
 	- relevant files: 
 		- `bst/avlTree.py`
