@@ -8,13 +8,13 @@ It serves as a personal toolbox to be used across multiple projects.
 ## Structures
 
 ### Trees
-- *AVL Tree*: A balanced binary search tree with customizable data
+- **AVL Tree**: A balanced binary search tree with customizable data
 	- Customizable functionality to handle multiple keys, default enforce uniqueness.
 	- relevant files: 
 		- `bst/avlTree.py`
 
 ### Priority Queues
-- Contains Max and Min Heaps with customizable data associated with a weight.
+- Contains Max and Min **Heaps** with customizable data associated with a weight.
 	- Min and Max are the same Heap implementation, simply with difference compare functions
 	- relevant files:
 		- `general/heap.py`
