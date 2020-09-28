@@ -1,5 +1,5 @@
-#from general import MinHeap as heap
-import general.MinHeap as heap
+from ..general import MinHeap as heap
+#import .general.MinHeap as heap
 
 '''
 This is a prototype of a Directed Graph object designed to be swift at the expense of space.
