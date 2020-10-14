@@ -10,6 +10,15 @@ be used further as an immutable Directed Graph
 '''
 class DirectedKeyGraph:
 
+    def __str__(self):
+        cur = ""
+        for i in range(len(self.V)):
+            cur += f"{i}:\t{str(self.V[i])}"
+        cur += "\n\n"
+        for i in range(len(self.V)):
+            cur += f"{i}:\t{str(self.V[i])}\n"
+        return cur
+
     '''
     Constructor method that produces a blank Graph.
     '''
