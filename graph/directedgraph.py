@@ -12,11 +12,13 @@ class DirectedKeyGraph:
 
     def __str__(self):
         cur = ""
-        for i in range(len(self.V)):
-            cur += f"{i}:\t{str(self.V[i])}"
-        cur += "\n\n"
+        cur += "\t----- Verticies -----\n"
         for i in range(len(self.V)):
             cur += f"{i}:\t{str(self.V[i])}\n"
+        cur += "\n\n"
+        cur += "\t----- Edges ------\n"
+        for i in range(len(self.E)):
+            cur += f"{i}:\t{str(self.E[i])}\n"
         return cur
 
     '''
