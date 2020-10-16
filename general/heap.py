@@ -131,6 +131,12 @@ class Heap:
     def __init__(self):
         self.storage = [0]
 
+    def peek(self):
+        if len(self.storage) > self.__class__.getRootIndex():
+            return self.storage[self.__class__.getRootIndex()]
+        else:
+            return None
+
     '''
     Gets the Size of the Heap.
     '''
