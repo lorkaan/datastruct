@@ -66,7 +66,10 @@ class HeapNode:
         return self.weight >= other.weight
 
     def __eq__(self, other):
-        return self.weight == other.weight
+        try:
+            return self.weight == other.weight
+        except:
+            return False
 
 '''
 Base class for Heap Implemetation.
