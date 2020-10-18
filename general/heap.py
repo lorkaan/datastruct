@@ -221,6 +221,9 @@ class Heap:
     Extracts the next element of the Heap, ensuring the heap property is
     maintained.
 
+    Note: Elements are returned in the following format
+        (weight, data)
+
     Returns the next element in the Heap.
     '''
     def next(self):
