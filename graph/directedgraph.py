@@ -21,6 +21,14 @@ class DirectedKeyGraph:
             cur += f"{i}:\t{str(self.E[i])}\n"
         return cur
 
+    def __repr__(self):
+        cur = self.__str__()
+        cur += "\n\n"
+        cur += "\t----- Back Edges ------\n"
+        for i in range(len(self.backE)):
+            cur += f"{i}:\t{str(self.backE[i])}\n"
+        return cur
+
     '''
     Constructor method that produces a blank Graph.
     '''
@@ -198,7 +206,7 @@ class DirectedKeyGraph:
         if self.vExists(vertex):
             return False # Already exists
         elif self.unusedV.size() > 0:
-            nextIndex = self.unusedV.next()
+            _, nextIndex = self.unusedV.next()
             self.V[nextIndex] = vertex
             self.vMap[vertex] = nextIndex
             self.E[nextIndex] = set()
@@ -224,14 +232,19 @@ class DirectedKeyGraph:
     def removeVertex(self, vertex):
         try:
             rmIndex = self.__vertexToInternal(vertex)
+            for e in self.E[rmIndex]:
+                if self.__removeE((e[0], rmIndex), self.backE):
+                    continue
+                else:
+                    raise ReferenceError(f"Unable to remove Edge: {e}")
             self.E[rmIndex] = None
-            self.V[rmIndex] = None
             for e in self.backE[rmIndex]:
                 if self.__removeE(self.__class__.reverseEdge(e), self.E):
                     continue
                 else:
                     raise ReferenceError(f"Unable to remove Edge: {e}")
             self.backE[rmIndex] = None # remove all copies of backedges
+            self.V[rmIndex] = None
             self.unusedV.add(rmIndex)
             del self.vMap[vertex]
             return not self.vExists(vertex)
@@ -290,24 +303,24 @@ class DirectedKeyGraph:
     def __removeE(self, edge, edgeCollection):
         try:
             indexTuple = self.__edgeToInternal(edge)
-            if isinstance(edgeCollection, list):
+            if isinstance(edgeCollection[indexTuple[0]], list):
                 i = 0
             for e in edgeCollection[indexTuple[0]]:
+                cur = indexTuple[1:]
                 if e == indexTuple[1:]:
-                    if isinstance(edgeCollection, list):
-                        i = i + 1
-                    if isinstance(edgeCollection, list):
-                        edgeCollection.pop(i, 1)
-                    elif hasattr(edgeCollection, 'remove'):
+                    if isinstance(edgeCollection[indexTuple[0]], list):
+                        edgeCollection[indexTuple[0]].pop(i)
+                    elif hasattr(edgeCollection[indexTuple[0]], 'remove'):
                         edgeCollection[indexTuple[0]].remove(indexTuple[1:])
                     else:
                         raise TypeError(f"Unable to remove from collection of type {type(edgeCollection[indexTuple[0]])}")
                     return True
                 else:
-                    continue
+                    if isinstance(edgeCollection[indexTuple[0]], list):
+                        i = i + 1
             return False
-        except:
-            raise
+        except Exception as e:
+            raise e
 
     '''
     Removes an edge from the Graph. Removes the edge from forward and backwards edge lists.
@@ -318,7 +331,7 @@ class DirectedKeyGraph:
     '''
     def removeEdge(self, edge):
         try:
-            indexTuple = self.__edgeToInternal(edge)
+            #indexTuple = self.__edgeToInternal(edge)
             return self.__removeE(edge, self.E) and self.__removeE(self.__class__.reverseEdge(edge), self.backE)
         except:
             raise
