@@ -323,11 +323,40 @@ class DirectedKeyGraph:
         except:
             raise
 
+    def __createEmptyRanges(self):
+        ranges = []
+        if self.unusedV.peek() == None:
+            return ranges
+        else:
+            start = self.unusedV.next()
+            prev = start
+            while self.unusedV.peek() == None:
+                cur = self.unusedV.next()
+                if (cur - prev) > 1:
+                    ranges.append(start, prev, (prev-start)+1)
+                    start = cur
+                    prev = start
+                else:
+                    prev = cur
+            ranges.append(start, prev, (prev-start)+1)
+            return ranges
+
+    def __moveEdges(self, start, end, moveTotal):
+        curIndex = end + 1
+        self.E[curIndex-moveTotal] = self.E[curIndex]
+        for edge in self.E[curIndex-moveTotal]:
+            self.__removeE(edge, self.backE)
+
     '''
     Compresses the Graph Data Structure to take up less space
     '''
     def compress(self):
-        pass
+        ranges = self.__createEmptyRanges()
+        moveTotal = 0
+        for start, end, size in ranges:
+            moveTotal = moveTotal + size
+
+
 
     def merge(self, other):
         pass
