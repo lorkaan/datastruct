@@ -245,7 +245,7 @@ class DirectedKeyGraph:
                     raise ReferenceError(f"Unable to remove Edge: {e}")
             self.backE[rmIndex] = None # remove all copies of backedges
             self.V[rmIndex] = None
-            self.unusedV.add(rmIndex)
+            self.unusedV.add(rmIndex, rmIndex) # Makes the index be the weight so it fills lower indecies first
             del self.vMap[vertex]
             return not self.vExists(vertex)
         except ValueError as e:
@@ -336,43 +336,68 @@ class DirectedKeyGraph:
         except:
             raise
 
-    def __createEmptyRanges(self):
-        ranges = []
-        if self.unusedV.peek() == None:
-            return ranges
-        else:
-            start = self.unusedV.next()
-            prev = start
-            while self.unusedV.peek() == None:
-                cur = self.unusedV.next()
-                if (cur - prev) > 1:
-                    ranges.append(start, prev, (prev-start)+1)
-                    start = cur
-                    prev = start
-                else:
-                    prev = cur
-            ranges.append(start, prev, (prev-start)+1)
-            return ranges
 
-    def __moveEdges(self, start, end, moveTotal):
-        curIndex = end + 1
-        self.E[curIndex-moveTotal] = self.E[curIndex]
-        for edge in self.E[curIndex-moveTotal]:
-            self.__removeE(edge, self.backE)
+    '''
+    Switches a non-empty vertex slot into an empty vertex slot.
+
+    '''
+    def __switchVetrex(self, oldIndex, newIndex):
+        if self.V[newIndex] == None and self.V[oldIndex] != None:
+            for e in self.E[oldIndex]:
+                self.__removeE(self.__class__.reverseEdge((oldIndex,) + e), self.backE)
+                self.__addE(self.__class__.reverseEdge((newIndex,) + e), self.backE)
+            tmp = self.E[newIndex]
+            self.E[newIndex] = self.E[oldIndex]
+            self.E[oldIndex] = tmp
+            tmp = self.V[newIndex]
+            self.V[newIndex] = self.V[oldIndex]
+            self.V[oldIndex] = tmp
+            return True
+        else:
+            return False
+
+    '''
+    Moves the verticies and edges 
+
+    Helper function to the compress function.
+    '''
+    def __moveEdges(self):
+        curIndex = len(self.V) - 1
+        while self.unusedV.peek() != None:
+            _, nextIndex = self.unusedV.next()
+            for i in range(curIndex, nextIndex, -1):
+                if self.V == None:
+                    continue
+                else:
+                    if not self.__switchVetrex(i, nextIndex):
+                        raise ReferenceError(f"Unable to switch the Verticies at oldIndex: {i} and nextIndex: {nextIndex}")
+                    else:
+                        curIndex = i - 1
+                        i  = nextIndex # break out of inner loop
+
+    '''
+    Saves the Graph to a given format.
+
+    Default is JSON for simple abstraction from a given programming language.
+    '''
+    def __save(self, format='json'):
+        pass
 
     '''
     Compresses the Graph Data Structure to take up less space
     '''
     def compress(self):
-        ranges = self.__createEmptyRanges()
-        moveTotal = 0
-        for start, end, size in ranges:
-            moveTotal = moveTotal + size
-
-
+        try:
+            self.__moveEdges()
+        except:
+            raise
 
     def merge(self, other):
         pass
 
     def serailize(self):
-        pass
+        try:
+            self.compress()
+            self.__save()
+        except:
+            raise
