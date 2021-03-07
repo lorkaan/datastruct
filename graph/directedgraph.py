@@ -1,6 +1,9 @@
 from ..general import MinHeap as heap
 #import .general.MinHeap as heap
 
+import json
+import os
+
 '''
 This is a prototype of a Directed Graph object designed to be swift at the expense of space.
 
@@ -9,6 +12,29 @@ the result is then either periodically compressed or serialized to a compressed 
 be used further as an immutable Directed Graph
 '''
 class DirectedKeyGraph:
+
+    serialize_fields = ["vertex_list", "edge_list"]
+
+    supported_serialize_formats = {
+        'json': loadJsonFormat
+    }
+
+    @classmethod
+    def loadJsonFormat(cls, obj_str):
+        if not isinstance(obj_str, str) or len(obj_str) <= 0:
+            raise TypeError(f"expected obj_str to be a string, but got: {type(obj_str)}")
+        if os.path.isfile(obj_str):
+            if obj_str.split(".")[-1] == 'json':
+                json_obj = json.load(obj_str)
+            else:
+                raise IOError(f"Can not open file. Expected json file, but got {obj_str.split('.')[-1]}")
+        else:
+            json_obj = json.loads(obj_str)
+        return_list = []
+        for field in cls.serialize_fields:
+            return_list = json_obj.get(field, [])
+        return return_list[:]
+        
 
     def __str__(self):
         cur = ""
@@ -380,8 +406,8 @@ class DirectedKeyGraph:
 
     Default is JSON for simple abstraction from a given programming language.
     '''
-    def __save(self, format='json'):
-        pass
+    def __save(self, save_format='json'):
+        return json.dumps(self)
 
     '''
     Compresses the Graph Data Structure to take up less space
@@ -391,6 +417,7 @@ class DirectedKeyGraph:
             self.__moveEdges()
         except:
             raise
+            
 
     def merge(self, other):
         pass
@@ -401,3 +428,40 @@ class DirectedKeyGraph:
             self.__save()
         except:
             raise
+
+    @classmethod
+    def __build(cls, vSet=[], eSet=[]):
+        """
+            Build command to use when building Graphs from serialized data.
+            Called by load command after the vertex set and edge set have been extracted from 
+            the serialized format.
+
+        """
+        graph = cls()
+        if isinstance(vSet, list):
+            vSet = set(vSet)
+        if isinstance(eSet, list):
+            eSet = set(eSet)
+        for v in vSet:
+            graph.addVertex(v)
+        for e in eSet:
+            graph.addEdge(e)
+        return graph
+
+    
+    @classmethod
+    def load(cls, obj_str, load_format='json'):
+        """
+            Loads an instance of Graph object from a given string represention
+            (either direct string representation or string representation of file)
+        """
+        if not isinstance(load_format, str) or len(load_format) <= 0:
+            raise TypeError(f"Expected load_format to be string, but got {type(load_format)}")
+        if load_format in cls.supported_serialize_formats.key():
+            if callable(supported_serialize_formats.get(load_format, None)):
+                vertex_set, edge_set = supported_serialize_formats[load_format](obj_str)
+                return cls.build(vSet=vertex_set, eSet=edge_set)
+            else:
+                raise TypeError(f"could not call load function for {load_format}, expected function but got: {type(supported_serialize_formats.get(load_format, None))")
+        else:
+            raise NotImplementedError(f"Loading format: {load_format} not supported at this time.")
