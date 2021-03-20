@@ -420,7 +420,8 @@ class DirectedKeyGraph:
             
 
     def merge(self, other):
-        pass
+        raise NotImplementedError("Merge functionality is currently not implemented")
+
 
     def serailize(self):
         try:
