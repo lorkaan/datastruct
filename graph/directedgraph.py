@@ -15,10 +15,6 @@ class DirectedKeyGraph:
 
     serialize_fields = ["vertex_list", "edge_list"]
 
-    supported_serialize_formats = {
-        'json': loadJsonFormat
-    }
-
     @classmethod
     def loadJsonFormat(cls, obj_str):
         if not isinstance(obj_str, str) or len(obj_str) <= 0:
@@ -34,6 +30,10 @@ class DirectedKeyGraph:
         for field in cls.serialize_fields:
             return_list = json_obj.get(field, [])
         return return_list[:]
+
+    supported_serialize_formats = {
+        'json': loadJsonFormat
+    }
         
 
     def __str__(self):
@@ -459,10 +459,10 @@ class DirectedKeyGraph:
         if not isinstance(load_format, str) or len(load_format) <= 0:
             raise TypeError(f"Expected load_format to be string, but got {type(load_format)}")
         if load_format in cls.supported_serialize_formats.key():
-            if callable(supported_serialize_formats.get(load_format, None)):
-                vertex_set, edge_set = supported_serialize_formats[load_format](obj_str)
+            if callable(cls.supported_serialize_formats.get(load_format, None)):
+                vertex_set, edge_set = cls.supported_serialize_formats[load_format](obj_str)
                 return cls.build(vSet=vertex_set, eSet=edge_set)
             else:
-                raise TypeError(f"could not call load function for {load_format}, expected function but got: {type(supported_serialize_formats.get(load_format, None))")
+                raise TypeError(f"could not call load function for {load_format}, expected function but got: {type(cls.supported_serialize_formats.get(load_format, None))}")
         else:
             raise NotImplementedError(f"Loading format: {load_format} not supported at this time.")
